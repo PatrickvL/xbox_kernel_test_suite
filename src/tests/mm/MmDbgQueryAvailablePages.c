@@ -7,9 +7,14 @@ TEST_FUNC(MmDbgQueryAvailablePages)
 {
     TEST_BEGIN();
 
-    // DEVKIT-only. Should return number of available debug pages.
+    // DEVKIT-only. On retail, the kernel thunk pointer is NULL.
+    if ((void*)MmDbgQueryAvailablePages == NULL) {
+        GEN_CHECK(TRUE, TRUE, "skipped - thunk is NULL");
+        TEST_END();
+        return;
+    }
+
     ULONG pages = MmDbgQueryAvailablePages();
-    // Should be >= 0 (could be 0 on retail)
     GEN_CHECK(pages >= 0, TRUE, "non-negative pages");
 
     TEST_END();
