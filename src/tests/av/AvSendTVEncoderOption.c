@@ -2,16 +2,23 @@
 
 #include "global.h" // for NV2A_MMIO_BASE var
 #include "util/output.h"
+#include "assertions/defines.h"
 
 TEST_FUNC(AvSendTVEncoderOption)
 {
-    // FIXME: there are other functions such as AV_OPTION_QUERY_MODE, AV_QUERY_ENCODER_TYPE, AV_OPTION_WIDESCREEN etc
-    // FIXME: this test is broken. I get inconsistent value from my real xbox
     TEST_BEGIN();
 
-    unsigned long res = 0;
-    AvSendTVEncoderOption((void *)NV2A_MMIO_BASE, 6, 0, &res);
-    print("AvSendTVEncoderOption: %lu (0=AV_PACK_NONE 1=AV_PACK_STANDARD 2=AV_PACK_RFU 3=AV_PACK_SCART 4=AV_PACK_HDTV 5=AV_PACK_VGA 6=AV_PACK_SVIDEO)", res);
+    // Query AV pack type (option 6 = AV_QUERY_AV_CAPABILITIES)
+    ULONG result = 0;
+    AvSendTVEncoderOption((void *)NV2A_MMIO_BASE, 6, 0, &result);
+
+    // Result should be a valid AV_PACK_* value (0-6 range)
+    GEN_CHECK(result <= 6, TRUE, "AV pack type in valid range");
+
+    // Query again to verify consistency
+    ULONG result2 = 0;
+    AvSendTVEncoderOption((void *)NV2A_MMIO_BASE, 6, 0, &result2);
+    GEN_CHECK(result2, result, "consistent result on repeated query");
 
     TEST_END();
 }
