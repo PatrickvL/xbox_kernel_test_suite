@@ -7,12 +7,16 @@ TEST_FUNC(MmDbgAllocateMemory)
 {
     TEST_BEGIN();
 
-    // MmDbgAllocateMemory is a DEVKIT-only function
-    // On retail, it may return NULL or not be available
-    // Test conservatively - just ensure it doesn't crash
+    // MmDbgAllocateMemory is a DEVKIT-only function.
+    // On retail, the kernel thunk pointer is NULL - calling it would crash.
+    if ((void*)MmDbgAllocateMemory == NULL) {
+        GEN_CHECK(TRUE, TRUE, "skipped - thunk is NULL");
+        TEST_END();
+        return;
+    }
+
     PVOID mem = MmDbgAllocateMemory(PAGE_SIZE, PAGE_READWRITE);
     if (mem) {
-        // If it succeeded, verify it's usable
         BOOLEAN is_valid = MmIsAddressValid(mem);
         GEN_CHECK(is_valid, TRUE, "dbg memory valid");
         *(volatile ULONG*)mem = 0xDBDBDBDB;
