@@ -39,10 +39,12 @@ TEST_FUNC(XeImageFileName)
             BOOL reasonable_len = (pName->Length >= 5); // e.g. "x.xbe" minimum
             GEN_CHECK(reasonable_len, TRUE, "path length >= 5");
 
-            // The string length should match strlen if it's null-terminated,
-            // or at least be consistent
-            USHORT actual_len = (USHORT)strlen(pName->Buffer);
-            GEN_CHECK(actual_len, pName->Length, "strlen matches Length");
+            // ANSI_STRING buffers are NOT guaranteed to be null-terminated.
+            // The authoritative length is the Length member, not a null terminator.
+            // Verify no embedded nulls exist within the declared length, which would
+            // indicate corruption or a malformed string.
+            BOOL no_embedded_null = (memchr(pName->Buffer, '\0', pName->Length) == NULL);
+            GEN_CHECK(no_embedded_null, TRUE, "no embedded nulls");
         }
     }
 
