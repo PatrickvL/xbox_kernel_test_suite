@@ -38,11 +38,12 @@ TEST_FUNC(HalReadWritePCISpace)
         { "Host bridge",    0, 0, 0x10DE, 0x0600 },
         { "ISA bridge",     0, 1, 0x10DE, 0x0601 },
         { "USB OHCI #0",    0, 2, 0x10DE, 0x0C03 },
-        { "USB OHCI #1",    0, 3, 0x10DE, 0x0C03 },
+        // USB OHCI #1 is conditional - only present with internal USB hub
         { "NIC (nvnet)",    0, 4, 0x10DE, 0x0200 },
         { "APU",            0, 5, 0x10DE, 0x0401 },
         { "ACI (AC97)",     0, 6, 0x10DE, 0x0703 },
         { "IDE",            0, 9, 0x10DE, 0x0101 },
+        { "NV2A GPU",       1, 0, 0x10DE, 0x0300 },
     };
     size_t num_devices = ARRAY_SIZE(known_devices);
 
@@ -58,6 +59,18 @@ TEST_FUNC(HalReadWritePCISpace)
                              PCI_CLASS_REV, &class_rev, sizeof(class_rev), FALSE);
         USHORT class_code = (USHORT)(class_rev >> 16);
         GEN_CHECK(class_code, known_devices[i].expected_class, known_devices[i].device_name);
+    }
+
+    // --- USB OHCI #1: only exists on systems with internal USB hub (daughterboard) ---
+    if (XboxHardwareInfo.Flags & XBOX_HW_FLAG_INTERNAL_USB_HUB) {
+        USHORT vendor_id = 0;
+        HalReadWritePCISpace(0, 3, PCI_VENDOR_ID, &vendor_id, sizeof(vendor_id), FALSE);
+        GEN_CHECK(vendor_id, (USHORT)0x10DE, "USB OHCI #1");
+
+        ULONG class_rev = 0;
+        HalReadWritePCISpace(0, 3, PCI_CLASS_REV, &class_rev, sizeof(class_rev), FALSE);
+        USHORT class_code = (USHORT)(class_rev >> 16);
+        GEN_CHECK(class_code, (USHORT)0x0C03, "USB OHCI #1");
     }
 
     // --- Consistency: reading same register twice gives same result ---
