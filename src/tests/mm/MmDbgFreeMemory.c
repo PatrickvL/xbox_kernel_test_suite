@@ -7,7 +7,13 @@ TEST_FUNC(MmDbgFreeMemory)
 {
     TEST_BEGIN();
 
-    // DEVKIT-only. Allocate and free.
+    // DEVKIT-only. On retail, the kernel thunk pointer is NULL.
+    if ((void*)MmDbgFreeMemory == NULL) {
+        GEN_CHECK(TRUE, TRUE, "skipped - thunk is NULL");
+        TEST_END();
+        return;
+    }
+
     PVOID mem = MmDbgAllocateMemory(PAGE_SIZE, PAGE_READWRITE);
     if (mem) {
         ULONG pages_freed = MmDbgFreeMemory(mem, PAGE_SIZE);
