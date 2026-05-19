@@ -15,12 +15,11 @@ TEST_FUNC(KeRemoveEntryDeviceQueue)
     KeInsertDeviceQueue(&queue, &entry2); // queued
 
     // Remove specific entry
-    // NOTE: nxdk declares second param as PKDEVICE_QUEUE (header bug), cast needed
-    BOOLEAN was_queued = KeRemoveEntryDeviceQueue(&queue, (PKDEVICE_QUEUE)&entry2);
+    BOOLEAN was_queued = KeRemoveEntryDeviceQueue(&queue, &entry2);
     GEN_CHECK(was_queued, TRUE, "entry was in queue");
 
     // Try to remove again (not in queue anymore)
-    was_queued = KeRemoveEntryDeviceQueue(&queue, (PKDEVICE_QUEUE)&entry2);
+    was_queued = KeRemoveEntryDeviceQueue(&queue, &entry2);
     GEN_CHECK(was_queued, FALSE, "entry not in queue");
 
     // Clean up
