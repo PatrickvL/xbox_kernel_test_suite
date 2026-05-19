@@ -7,6 +7,13 @@ TEST_FUNC(MmDbgWriteCheck)
 {
     TEST_BEGIN();
 
+    // DEVKIT-only. On retail, the kernel thunk pointer is NULL.
+    if ((void*)MmDbgWriteCheck == NULL) {
+        GEN_CHECK(TRUE, TRUE, "skipped - thunk is NULL");
+        TEST_END();
+        return;
+    }
+
     // MmDbgWriteCheck verifies a virtual address range is writable.
     // Returns the address if writable, NULL otherwise.
     PVOID mem = MmAllocateSystemMemory(PAGE_SIZE, PAGE_READWRITE);
