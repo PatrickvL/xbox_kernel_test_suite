@@ -1,6 +1,7 @@
 #include <xboxkrnl/xboxkrnl.h>
 
 #include "util/output.h"
+#include "util/misc.h"
 #include "assertions/defines.h"
 
 TEST_FUNC(MmIsAddressValid)
@@ -10,11 +11,11 @@ TEST_FUNC(MmIsAddressValid)
     // --- Valid addresses ---
 
     // Kernel code address (exported function pointer)
-    BOOLEAN result = MmIsAddressValid((PVOID)MmIsAddressValid);
+    BOOLEAN result = is_kernel_export_valid((PVOID)MmIsAddressValid);
     GEN_CHECK(result, TRUE, "kernel function address");
 
     // Another kernel function (cross-check it's not just one page)
-    result = MmIsAddressValid((PVOID)ExAllocatePool);
+    result = is_kernel_export_valid((PVOID)ExAllocatePool);
     GEN_CHECK(result, TRUE, "second kernel function");
 
     // Stack address
@@ -23,7 +24,7 @@ TEST_FUNC(MmIsAddressValid)
     GEN_CHECK(result, TRUE, "stack address");
 
     // Global data (exported kernel variable)
-    result = MmIsAddressValid((PVOID)&KeTickCount);
+    result = is_kernel_export_valid((PVOID)&KeTickCount);
     GEN_CHECK(result, TRUE, "kernel global data");
 
     // Dynamically allocated memory
