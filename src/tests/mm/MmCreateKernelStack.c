@@ -42,13 +42,17 @@ TEST_FUNC(MmCreateKernelStack)
     }
 
     // --- DebugStack = TRUE (allocates from debugger region: 0xB0000000, 256MB) ---
-    stack = MmCreateKernelStack(0, TRUE);
-    if (stack) {
-        GEN_CHECK(stack != NULL, TRUE, "debug stack created");
-        GEN_CHECK(MmIsAddressValid((PUCHAR)stack - 4), TRUE, "debug stack valid");
-        GEN_CHECK((ULONG)stack >= 0xB0000000, TRUE, "in debugger region");
-        GEN_CHECK((ULONG)stack < 0xC0000000, TRUE, "below debugger region end");
-        MmDeleteKernelStack(stack, NULL);
+    // Only available on devkit kernels; retail has no debugger memory region.
+    // Use MmDbgAllocateMemory thunk as a proxy - if it's NULL, debug memory is unavailable.
+    if ((void*)MmDbgAllocateMemory != NULL) {
+        stack = MmCreateKernelStack(0, TRUE);
+        if (stack) {
+            GEN_CHECK(stack != NULL, TRUE, "debug stack created");
+            GEN_CHECK(MmIsAddressValid((PUCHAR)stack - 4), TRUE, "debug stack valid");
+            GEN_CHECK((ULONG)stack >= 0xB0000000, TRUE, "in debugger region");
+            GEN_CHECK((ULONG)stack < 0xC0000000, TRUE, "below debugger region end");
+            MmDeleteKernelStack(stack, NULL);
+        }
     }
 
     TEST_END();
