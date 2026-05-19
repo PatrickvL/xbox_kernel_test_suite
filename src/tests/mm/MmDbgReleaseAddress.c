@@ -7,7 +7,13 @@ TEST_FUNC(MmDbgReleaseAddress)
 {
     TEST_BEGIN();
 
-    // DEVKIT-only. Test that it doesn't crash with valid debug memory.
+    // DEVKIT-only. On retail, the kernel thunk pointer is NULL.
+    if ((void*)MmDbgReleaseAddress == NULL) {
+        GEN_CHECK(TRUE, TRUE, "skipped - thunk is NULL");
+        TEST_END();
+        return;
+    }
+
     PVOID mem = MmDbgAllocateMemory(PAGE_SIZE, PAGE_READWRITE);
     if (mem) {
         MmDbgReleaseAddress(mem, NULL);
