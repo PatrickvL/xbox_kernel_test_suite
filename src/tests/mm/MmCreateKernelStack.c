@@ -13,8 +13,9 @@ TEST_FUNC(MmCreateKernelStack)
     if (stack) {
         // Stack top-4 should be valid (first usable DWORD below top)
         GEN_CHECK(MmIsAddressValid((PUCHAR)stack - 4), TRUE, "top-4 valid");
-        // Stack should be in kernel space (above 0x80000000 on Xbox)
-        GEN_CHECK((ULONG)stack >= 0x80000000, TRUE, "in kernel space");
+        // Non-debugger stacks are in the system region (0xD0000000, 512MB)
+        GEN_CHECK((ULONG)stack >= 0xD0000000, TRUE, "in system region");
+        GEN_CHECK((ULONG)stack < 0xF0000000, TRUE, "below system region end");
         // Default kernel stack is 12KB (3 pages), so top-12KB+4 should be valid
         GEN_CHECK(MmIsAddressValid((PUCHAR)stack - (12 * 1024) + 4), TRUE, "bottom of 12KB valid");
         MmDeleteKernelStack(stack, NULL);
@@ -40,11 +41,13 @@ TEST_FUNC(MmCreateKernelStack)
         MmDeleteKernelStack(stack, NULL);
     }
 
-    // --- DebugStack = TRUE (allocates from debug memory) ---
+    // --- DebugStack = TRUE (allocates from debugger region: 0xB0000000, 256MB) ---
     stack = MmCreateKernelStack(0, TRUE);
     if (stack) {
         GEN_CHECK(stack != NULL, TRUE, "debug stack created");
         GEN_CHECK(MmIsAddressValid((PUCHAR)stack - 4), TRUE, "debug stack valid");
+        GEN_CHECK((ULONG)stack >= 0xB0000000, TRUE, "in debugger region");
+        GEN_CHECK((ULONG)stack < 0xC0000000, TRUE, "below debugger region end");
         MmDeleteKernelStack(stack, NULL);
     }
 
