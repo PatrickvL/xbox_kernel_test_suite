@@ -7,11 +7,9 @@ TEST_FUNC(XProfpControl)
 {
     TEST_BEGIN();
 
-    // SKIP: XProfpControl is a profiling control API that is only available
-    // in debug/checked kernel builds. The API is not exported in retail kernels.
-    // Cannot be tested reliably across all environments.
+    // XProfpControl is a profiling control API only available in debug kernels.
 
-    GEN_CHECK(TRUE, TRUE, "XProfpControl skipped - debug kernel only");
+    TEST_SKIP("debug kernel only");
 
     TEST_END();
 }

@@ -7,11 +7,7 @@ TEST_FUNC(IrtClientInitFast)
 {
     TEST_BEGIN();
 
-    // IrtClientInitFast is an infrared transceiver (IR remote) initialization API.
-    // It requires IR hardware to be present and is not available on all Xbox revisions.
-    // No known prototype in public headers. Cannot test without hardware.
-
-    TEST_SKIP("IR hardware required");
+    TEST_SKIP("unknown purpose, no prototype available");
 
     TEST_END();
 }

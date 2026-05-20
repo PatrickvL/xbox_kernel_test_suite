@@ -7,10 +7,7 @@ TEST_FUNC(IrtSweep)
 {
     TEST_BEGIN();
 
-    // IrtSweep is an infrared transceiver sweep/scan API.
-    // Requires IR hardware. No known prototype in public headers.
-
-    TEST_SKIP("IR hardware required");
+    TEST_SKIP("unknown purpose, no prototype available");
 
     TEST_END();
 }

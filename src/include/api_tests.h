@@ -409,8 +409,8 @@ static kernel_api_test kernel_api_tests[] =
     GEN_API_TEST(UnknownAPI369),                             // 0x0171 (369)
     GEN_API_TEST(XProfpControl),                             // 0x0172 (370) PROFILING
     GEN_API_TEST(XProfpGetData),                             // 0x0173 (371) PROFILING
-    GEN_API_TEST(IrtClientInitFast),                         // 0x0174 (372) PROFILING
-    GEN_API_TEST(IrtSweep),                                  // 0x0175 (373) PROFILING
+    GEN_API_TEST(IrtClientInitFast),                         // 0x0174 (372) PROFILING - purpose uncertain
+    GEN_API_TEST(IrtSweep),                                  // 0x0175 (373) PROFILING - purpose uncertain
     GEN_API_TEST(MmDbgAllocateMemory),                       // 0x0177 (374) DEVKIT
     GEN_API_TEST(MmDbgFreeMemory),                           // 0x0178 (375) DEVKIT - Returns number of pages released.
     GEN_API_TEST(MmDbgQueryAvailablePages),                  // 0x0179 (376) DEVKIT
