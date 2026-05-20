@@ -64,10 +64,12 @@ TEST_FUNC(HalReadSMBusValue)
     }
 
     // --- Consistency: reading same register twice ---
-    ULONG rev1 = 0, rev2 = 0;
-    HalReadSMBusValue(SMC_ADDRESS, 0x01, FALSE, &rev1);
-    HalReadSMBusValue(SMC_ADDRESS, 0x01, FALSE, &rev2);
-    GEN_CHECK(rev1, rev2, "consistent reads");
+    // Use AV pack register (0x04) which is stable, not version register
+    // (0x01) which intentionally cycles through the 3-char version string.
+    ULONG av1 = 0, av2 = 0;
+    HalReadSMBusValue(SMC_ADDRESS, 0x04, FALSE, &av1);
+    HalReadSMBusValue(SMC_ADDRESS, 0x04, FALSE, &av2);
+    GEN_CHECK(av1, av2, "consistent reads");
 
     // --- NULL value pointer ---
     // SKIP: Passing NULL as the value pointer would cause HalReadSMBusValue to
