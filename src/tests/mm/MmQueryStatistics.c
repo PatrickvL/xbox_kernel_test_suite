@@ -9,46 +9,36 @@ TEST_FUNC(MmQueryStatistics)
     TEST_BEGIN();
 
     // --- Part 1: Verify all invalid Length values are rejected ---
-    // sizeof(MM_STATISTICS) == 0x24. Any Length != 0x24 must fail.
+    // sizeof(MM_STATISTICS) == 0x24. Any Length < 0x24 must fail.
+    // Length >= 0x24 is accepted for game compat (some games leave Length uninitialized).
     {
         const unsigned valid_length = sizeof(MM_STATISTICS); // 0x24
-        typedef struct { unsigned start; unsigned end; } range_t;
-        range_t invalid_ranges[2] = {
-            { 0, valid_length - 1 },      // 0x00 to 0x23: too small
-            { valid_length + 1, valid_length + 1 } // 0x25: too large (representative)
-        };
 
-        for (unsigned i = 0; i < 2; ++i) {
-            for (unsigned j = invalid_ranges[i].start; j <= invalid_ranges[i].end; ++j) {
-                MM_STATISTICS mm;
-                memset(&mm, 0, sizeof(mm));
-                mm.Length = j;
-
-                // Save a copy to verify struct wasn't written to
-                MM_STATISTICS mm_before;
-                memcpy(&mm_before, &mm, sizeof(mm));
-
-                NTSTATUS ret = MmQueryStatistics(&mm);
-                GEN_CHECK(ret, STATUS_INVALID_PARAMETER, "invalid Length rejected");
-
-                // Verify struct was not modified (beyond Length field already set)
-                GEN_CHECK(memcmp(&mm, &mm_before, sizeof(mm)) == 0, TRUE,
-                          "struct not written on invalid Length");
-            }
-        }
-
-        // Also test UINT32_MAX as an extreme boundary
-        {
+        // Test all too-small lengths (0x00 to 0x23)
+        for (unsigned j = 0; j < valid_length; ++j) {
             MM_STATISTICS mm;
             memset(&mm, 0, sizeof(mm));
-            mm.Length = UINT32_MAX;
+            mm.Length = j;
+
+            // Save a copy to verify struct wasn't written to
             MM_STATISTICS mm_before;
             memcpy(&mm_before, &mm, sizeof(mm));
 
             NTSTATUS ret = MmQueryStatistics(&mm);
-            GEN_CHECK(ret, STATUS_INVALID_PARAMETER, "Length=UINT32_MAX rejected");
+            GEN_CHECK(ret, STATUS_INVALID_PARAMETER, "invalid Length rejected");
+
+            // Verify struct was not modified (beyond Length field already set)
             GEN_CHECK(memcmp(&mm, &mm_before, sizeof(mm)) == 0, TRUE,
-                      "struct not written on UINT32_MAX");
+                      "struct not written on invalid Length");
+        }
+
+        // Length > sizeof is accepted (game compat: uninitialized structs may have large values)
+        {
+            MM_STATISTICS mm;
+            memset(&mm, 0, sizeof(mm));
+            mm.Length = valid_length + 1;
+            NTSTATUS ret = MmQueryStatistics(&mm);
+            GEN_CHECK(ret, STATUS_SUCCESS, "Length > sizeof accepted");
         }
     }
 
