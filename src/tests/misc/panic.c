@@ -9,8 +9,7 @@ TEST_FUNC(panic)
 
     // HalInitiateShutdown/panic is too dangerous to call
     // It would reboot/halt the system
-    // Just verify the test framework works
-    GEN_CHECK(TRUE, TRUE, "panic test skipped (would halt system)");
+    TEST_SKIP("would halt system");
 
     TEST_END();
 }

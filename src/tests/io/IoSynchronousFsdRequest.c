@@ -13,7 +13,7 @@ TEST_FUNC(IoSynchronousFsdRequest)
     // synchronous wait machinery expects a real device stack. This could
     // deadlock or crash if the device doesn't properly signal completion.
 
-    GEN_CHECK(TRUE, TRUE, "IoSynchronousFsdRequest skipped - needs real device stack");
+    TEST_SKIP("needs real device stack");
 
     TEST_END();
 }

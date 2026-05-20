@@ -11,7 +11,7 @@ TEST_FUNC(IoSynchronousDeviceIoControlRequest)
     // IOCTL to a device, waiting for completion. Same concerns as
     // IoSynchronousFsdRequest - could deadlock with our dummy device.
 
-    GEN_CHECK(TRUE, TRUE, "IoSynchronousDeviceIoControlRequest skipped - needs real device stack");
+    TEST_SKIP("needs real device stack");
 
     TEST_END();
 }

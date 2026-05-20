@@ -10,7 +10,7 @@ TEST_FUNC(MmDbgAllocateMemory)
     // MmDbgAllocateMemory is a DEVKIT-only function.
     // On retail, the kernel thunk pointer is NULL - calling it would crash.
     if ((void*)MmDbgAllocateMemory == NULL) {
-        GEN_CHECK(TRUE, TRUE, "skipped - thunk is NULL");
+        TEST_SKIP("thunk is NULL (retail)");
         TEST_END();
         return;
     }

@@ -9,7 +9,7 @@ TEST_FUNC(MmDbgFreeMemory)
 
     // DEVKIT-only. On retail, the kernel thunk pointer is NULL.
     if ((void*)MmDbgFreeMemory == NULL) {
-        GEN_CHECK(TRUE, TRUE, "skipped - thunk is NULL");
+        TEST_SKIP("thunk is NULL (retail)");
         TEST_END();
         return;
     }

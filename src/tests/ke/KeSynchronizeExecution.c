@@ -16,8 +16,7 @@ TEST_FUNC(KeSynchronizeExecution)
     TEST_BEGIN();
 
     // KeSynchronizeExecution requires a connected interrupt
-    // Skip the full test but verify the function signature is correct
-    GEN_CHECK(TRUE, TRUE, "test skipped (requires connected interrupt)");
+    TEST_SKIP("requires connected interrupt");
 
     TEST_END();
 }

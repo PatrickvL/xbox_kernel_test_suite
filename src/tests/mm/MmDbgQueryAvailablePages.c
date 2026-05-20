@@ -9,7 +9,7 @@ TEST_FUNC(MmDbgQueryAvailablePages)
 
     // DEVKIT-only. On retail, the kernel thunk pointer is NULL.
     if ((void*)MmDbgQueryAvailablePages == NULL) {
-        GEN_CHECK(TRUE, TRUE, "skipped - thunk is NULL");
+        TEST_SKIP("thunk is NULL (retail)");
         TEST_END();
         return;
     }

@@ -10,7 +10,7 @@ TEST_FUNC(UnknownAPI367)
     // SKIP: This kernel export has no known documentation or signature.
     // Cannot be tested without knowing what the function does or its parameters.
 
-    GEN_CHECK(TRUE, TRUE, "UnknownAPI367 skipped - undocumented");
+    TEST_SKIP("undocumented kernel export");
 
     TEST_END();
 }
