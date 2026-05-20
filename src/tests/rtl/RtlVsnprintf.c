@@ -1,6 +1,5 @@
 #include <xboxkrnl/xboxkrnl.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdarg.h>
 
 #include "util/output.h"
@@ -10,12 +9,12 @@ static int test_vsnprintf_helper(char* buf, size_t size, const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    int ret = _vsnprintf(buf, size, fmt, args);
+    int ret = RtlVsnprintf(buf, size, fmt, args);
     va_end(args);
     return ret;
 }
 
-TEST_FUNC(_vsnprintf)
+TEST_FUNC(RtlVsnprintf)
 {
     TEST_BEGIN();
 
