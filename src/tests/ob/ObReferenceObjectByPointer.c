@@ -29,20 +29,19 @@ TEST_FUNC(ObReferenceObjectByPointer)
             LONG after_ref = header->PointerCount;
             GEN_CHECK(after_ref, initial_count + 1, "refcount incremented");
 
-            // --- NULL object type (accept any) ---
+            // --- NULL object type (should fail) ---
             status = ObReferenceObjectByPointer(object, NULL);
-            GEN_CHECK(status, STATUS_SUCCESS, "NULL type succeeds");
-            LONG after_ref2 = header->PointerCount;
-            GEN_CHECK(after_ref2, initial_count + 2, "refcount +2");
+            GEN_CHECK(status, STATUS_OBJECT_TYPE_MISMATCH, "NULL type fails");
+            LONG after_null = header->PointerCount;
+            GEN_CHECK(after_null, initial_count + 1, "refcount unchanged on NULL type");
 
             // --- Wrong object type ---
             status = ObReferenceObjectByPointer(object, &ObSymbolicLinkObjectType);
             GEN_CHECK(status, STATUS_OBJECT_TYPE_MISMATCH, "wrong type fails");
             LONG after_wrong = header->PointerCount;
-            GEN_CHECK(after_wrong, initial_count + 2, "refcount unchanged on type mismatch");
+            GEN_CHECK(after_wrong, initial_count + 1, "refcount unchanged on type mismatch");
 
             // Balance
-            ObfDereferenceObject(object);
             ObfDereferenceObject(object);
             ObfDereferenceObject(object); // from ObReferenceObjectByHandle
         }
