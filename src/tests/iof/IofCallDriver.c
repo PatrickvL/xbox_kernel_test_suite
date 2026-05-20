@@ -13,7 +13,7 @@ TEST_FUNC(IofCallDriver)
     PDEVICE_OBJECT device = NULL;
     NTSTATUS status = IoCreateDevice(&dummy_driver_object, 0, NULL, FILE_DEVICE_CD_ROM, FALSE, &device);
     if (!NT_SUCCESS(status)) {
-        GEN_CHECK(TRUE, TRUE, "SKIP - IoCreateDevice failed");
+        TEST_SKIP("IoCreateDevice failed");
         TEST_END();
         return;
     }

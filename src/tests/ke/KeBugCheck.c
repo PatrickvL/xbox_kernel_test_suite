@@ -8,7 +8,8 @@ TEST_FUNC(KeBugCheck)
     TEST_BEGIN();
 
     // KeBugCheck would crash the system - DO NOT CALL
-    GEN_CHECK(TRUE, TRUE, "test skipped (would BSOD)");
+
+    TEST_SKIP("would BSOD");
 
     TEST_END();
 }

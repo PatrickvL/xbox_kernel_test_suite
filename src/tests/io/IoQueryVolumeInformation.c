@@ -20,7 +20,7 @@ TEST_FUNC(IoQueryVolumeInformation)
     NTSTATUS status = NtOpenFile(&hFile, GENERIC_READ | SYNCHRONIZE, &oa, &iosb,
         FILE_SHARE_READ, FILE_SYNCHRONOUS_IO_NONALERT);
     if (!NT_SUCCESS(status)) {
-        GEN_CHECK(TRUE, TRUE, "SKIP - could not open test file");
+        TEST_SKIP("could not open test file");
         TEST_END();
         return;
     }

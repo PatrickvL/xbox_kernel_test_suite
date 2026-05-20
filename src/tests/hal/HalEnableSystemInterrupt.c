@@ -8,7 +8,8 @@ TEST_FUNC(HalEnableSystemInterrupt)
     TEST_BEGIN();
 
     // Enabling system interrupts for arbitrary vectors is dangerous
-    GEN_CHECK(TRUE, TRUE, "HalEnableSystemInterrupt test skipped (dangerous)");
+
+    TEST_SKIP("dangerous - could enable unexpected IRQ");
 
     TEST_END();
 }

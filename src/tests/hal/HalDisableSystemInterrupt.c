@@ -8,8 +8,8 @@ TEST_FUNC(HalDisableSystemInterrupt)
     TEST_BEGIN();
 
     // Disabling and re-enabling a system interrupt is dangerous
-    // Just verify the test doesn't crash with a stub check
-    GEN_CHECK(TRUE, TRUE, "HalDisableSystemInterrupt test skipped (dangerous)");
+
+    TEST_SKIP("dangerous - could disable critical system IRQ");
 
     TEST_END();
 }

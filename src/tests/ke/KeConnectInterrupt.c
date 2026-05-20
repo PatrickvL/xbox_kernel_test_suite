@@ -8,8 +8,8 @@ TEST_FUNC(KeConnectInterrupt)
     TEST_BEGIN();
 
     // Connecting interrupts to active IRQs is dangerous
-    // Just verify the function exists
-    GEN_CHECK(TRUE, TRUE, "test skipped (dangerous - could steal IRQ)");
+
+    TEST_SKIP("dangerous - could steal IRQ");
 
     TEST_END();
 }

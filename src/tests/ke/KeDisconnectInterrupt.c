@@ -8,7 +8,8 @@ TEST_FUNC(KeDisconnectInterrupt)
     TEST_BEGIN();
 
     // Disconnecting active interrupts is dangerous
-    GEN_CHECK(TRUE, TRUE, "test skipped (dangerous)");
+
+    TEST_SKIP("dangerous - could disconnect active IRQ");
 
     TEST_END();
 }
