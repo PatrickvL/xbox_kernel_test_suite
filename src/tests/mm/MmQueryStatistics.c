@@ -9,8 +9,7 @@ TEST_FUNC(MmQueryStatistics)
     TEST_BEGIN();
 
     // --- Part 1: Verify all invalid Length values are rejected ---
-    // sizeof(MM_STATISTICS) == 0x24. Any Length < 0x24 must fail.
-    // Length >= 0x24 is accepted for game compat (some games leave Length uninitialized).
+    // sizeof(MM_STATISTICS) == 0x24. Only exactly 0x24 is accepted.
     {
         const unsigned valid_length = sizeof(MM_STATISTICS); // 0x24
 
@@ -32,13 +31,13 @@ TEST_FUNC(MmQueryStatistics)
                       "struct not written on invalid Length");
         }
 
-        // Length > sizeof is accepted (game compat: uninitialized structs may have large values)
+        // Length > sizeof must also fail
         {
             MM_STATISTICS mm;
             memset(&mm, 0, sizeof(mm));
             mm.Length = valid_length + 1;
             NTSTATUS ret = MmQueryStatistics(&mm);
-            GEN_CHECK(ret, STATUS_SUCCESS, "Length > sizeof accepted");
+            GEN_CHECK(ret, STATUS_INVALID_PARAMETER, "Length > sizeof rejected");
         }
     }
 
