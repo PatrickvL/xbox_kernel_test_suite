@@ -47,6 +47,13 @@ TEST_FUNC(ObOpenObjectByPointer)
             LONG after_close = header->HandleCount;
             GEN_CHECK(after_close, initial_handle_count, "handle count restored");
 
+            // --- NULL object type (should fail - unlike ObReferenceObjectByHandle,
+            //     ObReferenceObjectByPointer does NOT accept NULL as "any type") ---
+            HANDLE null_type_handle = NULL;
+            status = ObOpenObjectByPointer(object, NULL, &null_type_handle);
+            GEN_CHECK(status, STATUS_OBJECT_TYPE_MISMATCH, "NULL type fails");
+            GEN_CHECK(null_type_handle == NULL, TRUE, "no handle on NULL type");
+
             // --- Wrong object type ---
             HANDLE bad_handle = NULL;
             status = ObOpenObjectByPointer(object, &ObSymbolicLinkObjectType, &bad_handle);
