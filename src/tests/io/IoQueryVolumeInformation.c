@@ -9,13 +9,12 @@ TEST_FUNC(IoQueryVolumeInformation)
     TEST_BEGIN();
 
     // IoQueryVolumeInformation queries volume info via a FILE_OBJECT.
+    // Use the running XBE's path (from kernel export) to guarantee a valid file.
     OBJECT_ATTRIBUTES oa;
-    OBJECT_STRING path;
     IO_STATUS_BLOCK iosb;
     HANDLE hFile;
 
-    RtlInitAnsiString(&path, "\\Device\\Harddisk0\\Partition1\\devkit\\default.xbe");
-    InitializeObjectAttributes(&oa, &path, OBJ_CASE_INSENSITIVE, NULL, NULL);
+    InitializeObjectAttributes(&oa, &XeImageFileName[0], OBJ_CASE_INSENSITIVE, NULL, NULL);
 
     NTSTATUS status = NtOpenFile(&hFile, GENERIC_READ | SYNCHRONIZE, &oa, &iosb,
         FILE_SHARE_READ, FILE_SYNCHRONOUS_IO_NONALERT);
