@@ -36,20 +36,22 @@ TEST_FUNC(MmQueryAllocationSize)
     }
 
     // --- Pool allocations ---
+    // NOTE: MmQueryAllocationSize is designed for MmAllocateContiguousMemory
+    // and MmAllocateSystemMemory only. For pool blocks (ExAllocatePool), it
+    // walks the PTEs of the underlying page allocation and returns PAGE_SIZE
+    // (since pool pages are single-page MmAllocateSystemMemory allocations).
     mem = ExAllocatePool(64);
     if (mem) {
         ULONG size = MmQueryAllocationSize(mem);
-        GEN_CHECK(size >= 64, TRUE, "pool size >= requested");
-        // Pool blocks have header overhead, typically < 64 extra bytes
-        GEN_CHECK(size < 64 + 128, TRUE, "pool size reasonable");
+        GEN_CHECK(size, PAGE_SIZE, "pool block returns PAGE_SIZE");
         ExFreePool(mem);
     }
 
-    // --- Larger pool allocation ---
+    // --- Larger pool allocation (still sub-page) ---
     mem = ExAllocatePool(1024);
     if (mem) {
         ULONG size = MmQueryAllocationSize(mem);
-        GEN_CHECK(size >= 1024, TRUE, "1024-byte pool size");
+        GEN_CHECK(size, PAGE_SIZE, "1024-byte pool returns PAGE_SIZE");
         ExFreePool(mem);
     }
 
